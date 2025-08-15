@@ -27,10 +27,13 @@ export interface NotesResponse {
   notes: Note[];
 }
 
+// Get API base URL from environment or default to localhost
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
 export class NotesService {
   static async getNotes(): Promise<Note[]> {
     try {
-      const response = await fetch('/api/notes', {
+      const response = await fetch(`${API_BASE_URL}/api/notes`, {
         credentials: 'include',
       });
 
@@ -63,7 +66,7 @@ export class NotesService {
         throw new Error('Authentication required');
       }
 
-      const response = await fetch('/api/notes/my-notes', {
+      const response = await fetch(`${API_BASE_URL}/api/notes/my-notes`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -84,7 +87,7 @@ export class NotesService {
 
   static async getNoteById(id: string): Promise<NoteResponse | null> {
     try {
-      const response = await fetch(`/api/notes/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/notes/${id}`, {
         credentials: 'include',
       });
 
@@ -107,7 +110,7 @@ export class NotesService {
       const token = localStorage.getItem('auth_token');
       if (!token) throw new Error('Authentication required');
 
-      const response = await fetch('/api/notes/admin/pending', {
+      const response = await fetch(`${API_BASE_URL}/api/notes/admin/pending`, {
         headers: {
           'Authorization': `Bearer ${token}`, // api
         },
@@ -131,7 +134,7 @@ export class NotesService {
       const token = localStorage.getItem('auth_token');
       if (!token) throw new Error('Authentication required');
 
-      const response = await fetch(`/api/notes/admin/${noteId}/approve`, {
+      const response = await fetch(`${API_BASE_URL}/api/notes/admin/${noteId}/approve`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -156,7 +159,7 @@ export class NotesService {
       const token = localStorage.getItem('auth_token');
       if (!token) throw new Error('Authentication required');
 
-      const response = await fetch(`/api/notes/admin/${noteId}/reject`, {
+      const response = await fetch(`${API_BASE_URL}/api/notes/admin/${noteId}/reject`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -181,7 +184,7 @@ export class NotesService {
       const token = localStorage.getItem('auth_token');
       if (!token) throw new Error('Authentication required');
 
-      const response = await fetch(`/api/notes/${noteId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/notes/${noteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
