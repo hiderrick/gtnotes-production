@@ -2,7 +2,6 @@ import express from 'express';
 import multer from 'multer';
 import { NotesService } from '../services/notesService';
 import { isAuthenticated, isAdmin, AuthRequest } from '../middleware/auth';
-import { validateNoteData } from '../utils/validation';
 
 const router = express.Router();
 
@@ -39,24 +38,12 @@ router.post('/upload', isAuthenticated, upload.single('file'), async (req: AuthR
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // validates and formats input data
-    const validation = validateNoteData({
+    const note = await NotesService.createNote({
       title,
       course,
       professor,
       semester,
       description,
-    });
-
-    if (!validation.isValid) {
-      return res.status(400).json({ 
-        error: 'Validation failed',
-        details: validation.errors 
-      });
-    }
-
-    const note = await NotesService.createNote({
-      ...validation.formattedData!,
       file: req.file,
       userId: req.user.id,
     });
